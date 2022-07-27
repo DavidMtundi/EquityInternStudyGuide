@@ -12,8 +12,8 @@ using SG.Repo;
 namespace SG.Repo.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220725095233_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20220727201349_Migration2")]
+    partial class Migration2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,46 +24,20 @@ namespace SG.Repo.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("SG.Data.Entities.ContentCreatorModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Department")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WorkEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ContentCreators");
-                });
-
             modelBuilder.Entity("SG.Data.Entities.InternModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("AddedDate")
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Department")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("PFNumber")
                         .HasColumnType("nvarchar(max)");
@@ -73,7 +47,7 @@ namespace SG.Repo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Interns");
+                    b.ToTable("InternModels");
                 });
 
             modelBuilder.Entity("SG.Data.Entities.LearningMaterialModel", b =>
@@ -82,16 +56,22 @@ namespace SG.Repo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("AddedDate")
+                    b.Property<DateTime>("DateAdded")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("InternId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("InternModelId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsChecked")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UploadId")
+                    b.Property<Guid>("UploadModelId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("WorkEmail")
@@ -99,9 +79,37 @@ namespace SG.Repo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UploadId");
+                    b.HasIndex("InternModelId");
 
-                    b.ToTable("LearningMaterials");
+                    b.HasIndex("UploadModelId");
+
+                    b.ToTable("LearningMaterialModels");
+                });
+
+            modelBuilder.Entity("SG.Data.Entities.SG.Data.Entities.ContentCreatorModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Department")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WorkEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContentCreatorModels");
                 });
 
             modelBuilder.Entity("SG.Data.Entities.UploadModel", b =>
@@ -110,14 +118,17 @@ namespace SG.Repo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ContentCreatorId")
+                    b.Property<Guid>("ContentCreatorId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Department")
                         .HasColumnType("nvarchar(max)");
@@ -125,41 +136,43 @@ namespace SG.Repo.Migrations
                     b.Property<double>("Duration")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Summary")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UploadedBy")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ContentCreatorId");
 
-                    b.ToTable("Uploads");
+                    b.ToTable("UploadModels");
                 });
 
             modelBuilder.Entity("SG.Data.Entities.LearningMaterialModel", b =>
                 {
-                    b.HasOne("SG.Data.Entities.UploadModel", "Upload")
+                    b.HasOne("SG.Data.Entities.InternModel", "InternModel")
                         .WithMany()
-                        .HasForeignKey("UploadId")
+                        .HasForeignKey("InternModelId");
+
+                    b.HasOne("SG.Data.Entities.UploadModel", "Uploadmodel")
+                        .WithMany()
+                        .HasForeignKey("UploadModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Upload");
+                    b.Navigation("InternModel");
+
+                    b.Navigation("Uploadmodel");
                 });
 
             modelBuilder.Entity("SG.Data.Entities.UploadModel", b =>
                 {
-                    b.HasOne("SG.Data.Entities.ContentCreatorModel", "ContentCreator")
+                    b.HasOne("SG.Data.Entities.SG.Data.Entities.ContentCreatorModel", "ContentCreator")
                         .WithMany()
-                        .HasForeignKey("ContentCreatorId");
+                        .HasForeignKey("ContentCreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ContentCreator");
                 });

@@ -45,7 +45,7 @@ namespace SG.Repo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InternModel");
+                    b.ToTable("InternModels");
                 });
 
             modelBuilder.Entity("SG.Data.Entities.LearningMaterialModel", b =>
@@ -60,20 +60,34 @@ namespace SG.Repo.Migrations
                     b.Property<DateTime>("DateModified")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("InternId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("InternModelId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsChecked")
                         .HasColumnType("bit");
+
+                    b.Property<Guid>("UploadModelId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("WorkEmail")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("LearningMaterialModel");
+                    b.HasIndex("InternModelId");
+
+                    b.HasIndex("UploadModelId");
+
+                    b.ToTable("LearningMaterialModels");
                 });
 
             modelBuilder.Entity("SG.Data.Entities.SG.Data.Entities.ContentCreatorModel", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateAdded")
@@ -83,28 +97,30 @@ namespace SG.Repo.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Department")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WorkEmail")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContentCreatorModel");
+                    b.ToTable("ContentCreatorModels");
                 });
 
             modelBuilder.Entity("SG.Data.Entities.UploadModel", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ContentCreatorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("datetime2");
@@ -126,38 +142,36 @@ namespace SG.Repo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UploadModel");
-                });
+                    b.HasIndex("ContentCreatorId");
 
-            modelBuilder.Entity("SG.Data.Entities.SG.Data.Entities.ContentCreatorModel", b =>
-                {
-                    b.HasOne("SG.Data.Entities.UploadModel", "Uploadmodel")
-                        .WithOne("ContentCreator")
-                        .HasForeignKey("SG.Data.Entities.SG.Data.Entities.ContentCreatorModel", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Uploadmodel");
-                });
-
-            modelBuilder.Entity("SG.Data.Entities.UploadModel", b =>
-                {
-                    b.HasOne("SG.Data.Entities.LearningMaterialModel", "LearningMaterial")
-                        .WithOne("Uploadmodel")
-                        .HasForeignKey("SG.Data.Entities.UploadModel", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LearningMaterial");
+                    b.ToTable("UploadModels");
                 });
 
             modelBuilder.Entity("SG.Data.Entities.LearningMaterialModel", b =>
                 {
+                    b.HasOne("SG.Data.Entities.InternModel", "InternModel")
+                        .WithMany()
+                        .HasForeignKey("InternModelId");
+
+                    b.HasOne("SG.Data.Entities.UploadModel", "Uploadmodel")
+                        .WithMany()
+                        .HasForeignKey("UploadModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("InternModel");
+
                     b.Navigation("Uploadmodel");
                 });
 
             modelBuilder.Entity("SG.Data.Entities.UploadModel", b =>
                 {
+                    b.HasOne("SG.Data.Entities.SG.Data.Entities.ContentCreatorModel", "ContentCreator")
+                        .WithMany()
+                        .HasForeignKey("ContentCreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("ContentCreator");
                 });
 #pragma warning restore 612, 618
