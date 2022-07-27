@@ -16,6 +16,8 @@ namespace SG.Repo
 
         public T Add(T model)
         {
+            model.Id = Guid.NewGuid();
+            model.DateAdded = DateTime.Now;
             entities.Add(model);
             SaveChanges();
             return model;
