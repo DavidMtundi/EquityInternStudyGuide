@@ -6,7 +6,7 @@ namespace SG.Repo
     public class Repository<T> : IRepository<T> where T : BaseModel
     {
         private readonly ApplicationContext _applicationContext;
-        private DbSet<T> entities;
+        private DbSet<T> entities { get; set; }
 
         public Repository(ApplicationContext context)
         {
@@ -17,6 +17,7 @@ namespace SG.Repo
         public T Add(T model)
         {
             entities.Add(model);
+            SaveChanges();
             return model;
         }
 
@@ -33,10 +34,9 @@ namespace SG.Repo
 
         public T Get(T model)
         {
-            //if (model != null)
-            //{
+
             return entities.FirstOrDefault<T>((x) => x.Id == model.Id)!;
-            //}
+
         }
 
         public IEnumerable<T> GetAll()

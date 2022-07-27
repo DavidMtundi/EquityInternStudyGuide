@@ -26,7 +26,7 @@ namespace SG.Web.Controllers
         {
             return Ok(_repository.GetAll());
         }
-        [HttpGet("get-by-id")]
+        [HttpGet("get-by-id/{id}")]
         public IActionResult GetById(Guid id)
         {
             var result = _repository.GetById(id);
@@ -36,16 +36,25 @@ namespace SG.Web.Controllers
             }
             return NotFound("Not Found");
         }
-        [HttpPatch("update")]
-        public IActionResult Update(InternModel model)
+        [HttpPatch("update/{id}")]
+        public IActionResult Update(InternModel model, Guid id)
         {
+            if (_repository.GetById(id) == null)
+            {
+                return NotFound("The Id is not found");
+            }
 
             _repository.Update(model);
             return Ok(model);
         }
-        [HttpDelete("delete")]
+        [HttpDelete("delete/{id}")]
         public IActionResult Delete(Guid id)
         {
+            if (_repository.GetById(id) == null)
+            {
+                return NotFound("The Id is not found");
+
+            }
             _repository.Delete(id);
             return Ok("Deleted");
         }
