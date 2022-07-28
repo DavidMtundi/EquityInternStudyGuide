@@ -15,6 +15,5 @@ namespace SG.Repo
         public DbSet<UploadModel>? UploadModels { get; set; }
         public DbSet<LearningMaterialModel> LearningMaterialModels { get; set; }
 
-
     }
 }
