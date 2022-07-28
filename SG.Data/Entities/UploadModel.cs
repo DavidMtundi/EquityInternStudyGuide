@@ -15,7 +15,6 @@ namespace SG.Data.Entities
         public Guid ContentCreatorId { get; set; }
         [JsonIgnore]
         public ContentCreatorModel? ContentCreator { get; set; }
-        //  [JsonIgnore]
-        // public virtual LearningMaterialModel? LearningMaterial { get; set; }
+
     }
 }

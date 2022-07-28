@@ -7,8 +7,7 @@
             public string? WorkEmail { get; set; }
             public string? Department { get; set; }
             public string? Role { get; set; }
-            // [JsonIgnore]
-            //s  public virtual UploadModel? Uploadmodel { get; set; }
+
         }
     }
 }
