@@ -12,8 +12,8 @@ using SG.Repo;
 namespace SG.Repo.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220725095233_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20220726152407_newMigration")]
+    partial class newMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,56 +24,33 @@ namespace SG.Repo.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("SG.Data.Entities.ContentCreatorModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Department")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WorkEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ContentCreators");
-                });
-
             modelBuilder.Entity("SG.Data.Entities.InternModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("AddedDate")
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Department")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("PFNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WorkEmail")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Interns");
+                    b.ToTable("InternModel");
                 });
 
             modelBuilder.Entity("SG.Data.Entities.LearningMaterialModel", b =>
@@ -82,85 +59,116 @@ namespace SG.Repo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("AddedDate")
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsChecked")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UploadId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("WorkEmail")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UploadId");
+                    b.ToTable("LearningMaterialModel");
+                });
 
-                    b.ToTable("LearningMaterials");
+            modelBuilder.Entity("SG.Data.Entities.SG.Data.Entities.ContentCreatorModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WorkEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContentCreatorModel");
                 });
 
             modelBuilder.Entity("SG.Data.Entities.UploadModel", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ContentCreatorId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Department")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Duration")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Summary")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UploadedBy")
-                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContentCreatorId");
-
-                    b.ToTable("Uploads");
+                    b.ToTable("UploadModel");
                 });
 
-            modelBuilder.Entity("SG.Data.Entities.LearningMaterialModel", b =>
+            modelBuilder.Entity("SG.Data.Entities.SG.Data.Entities.ContentCreatorModel", b =>
                 {
-                    b.HasOne("SG.Data.Entities.UploadModel", "Upload")
-                        .WithMany()
-                        .HasForeignKey("UploadId")
+                    b.HasOne("SG.Data.Entities.UploadModel", "Uploadmodel")
+                        .WithOne("ContentCreator")
+                        .HasForeignKey("SG.Data.Entities.SG.Data.Entities.ContentCreatorModel", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Upload");
+                    b.Navigation("Uploadmodel");
                 });
 
             modelBuilder.Entity("SG.Data.Entities.UploadModel", b =>
                 {
-                    b.HasOne("SG.Data.Entities.ContentCreatorModel", "ContentCreator")
-                        .WithMany()
-                        .HasForeignKey("ContentCreatorId");
+                    b.HasOne("SG.Data.Entities.LearningMaterialModel", "LearningMaterial")
+                        .WithOne("Uploadmodel")
+                        .HasForeignKey("SG.Data.Entities.UploadModel", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
+                    b.Navigation("LearningMaterial");
+                });
+
+            modelBuilder.Entity("SG.Data.Entities.LearningMaterialModel", b =>
+                {
+                    b.Navigation("Uploadmodel");
+                });
+
+            modelBuilder.Entity("SG.Data.Entities.UploadModel", b =>
+                {
                     b.Navigation("ContentCreator");
                 });
 #pragma warning restore 612, 618
