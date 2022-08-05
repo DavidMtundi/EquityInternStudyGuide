@@ -14,7 +14,7 @@ namespace SG.Web.Controllers
         {
             this._repository = repository;
         }
-        [HttpPost("add-creator")]
+        [HttpPost("add")]
         public IActionResult AddCreator(ContentCreatorModel model)
         {
             _repository.Add(model);

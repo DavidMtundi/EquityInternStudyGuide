@@ -15,7 +15,7 @@ namespace SG.Web.Controllers
         {
             this._repository = repository;
         }
-        [HttpPost("add-intern")]
+        [HttpPost("add")]
         public IActionResult AddLearningMaterial(InternModel model)
         {
             _repository.Add(model);
@@ -45,6 +45,7 @@ namespace SG.Web.Controllers
                 result.WorkEmail = String.IsNullOrEmpty(model.WorkEmail) ? result.WorkEmail : model.WorkEmail;
                 result.Department = String.IsNullOrEmpty(model.Department) ? result.Department : model.Department;
                 result.DateModified = DateTime.Now;
+
                 // result. = string.IsNullOrEmpty(model.PFNumber) ? result.PFNumber : model.PFNumber;
 
                 result.PFNumber = string.IsNullOrEmpty(model.PFNumber) ? result.PFNumber : model.PFNumber;
