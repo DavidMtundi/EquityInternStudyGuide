@@ -15,7 +15,7 @@ namespace SG.Web.Controllers
         {
             this._repository = repository;
         }
-        [HttpPost("add-learning-material")]
+        [HttpPost("add")]
         public IActionResult AddLearningMaterial(LearningMaterialModel model)
         {
             _repository.Add(model);
@@ -40,14 +40,16 @@ namespace SG.Web.Controllers
         public IActionResult Update(LearningMaterialModel model, Guid id)
         {
             var result = _repository.GetById(id);
-            if (result == null)
+            if (result != null)
             {
+
+                Guid newGuid = Guid.NewGuid();
                 result.WorkEmail = String.IsNullOrEmpty(model.WorkEmail) ? result.WorkEmail : model.WorkEmail;
                 result.DateModified = DateTime.Now;
 
-                result.InternId = String.IsNullOrEmpty(model.InternId.ToString()) ? result.InternId : model.InternId;
+                result.InternId = model.InternId == Guid.Empty ? result.InternId : model.InternId;
                 result.IsChecked = model.IsChecked;
-                result.UploadModelId = String.IsNullOrEmpty(model.UploadModelId.ToString()) ? result.UploadModelId : model.UploadModelId;
+                result.UploadModelId = model.UploadModelId == Guid.Empty ? result.UploadModelId : model.UploadModelId;
                 _repository.Update(result);
                 return Ok(result);
 
@@ -56,7 +58,7 @@ namespace SG.Web.Controllers
             // _repository.Update(model);
             return NotFound($"The id {id} cannot be found ");
         }
-        [HttpDelete("delete")]
+        [HttpDelete("delete/{id}")]
         public IActionResult Delete(Guid id)
         {
             var result = _repository.GetById(id);

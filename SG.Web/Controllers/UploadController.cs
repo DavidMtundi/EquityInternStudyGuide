@@ -15,7 +15,7 @@ namespace SG.Web.Controllers
         {
             this._repository = repository;
         }
-        [HttpPost("add-uploads")]
+        [HttpPost("add")]
         public IActionResult AddLearningMaterial(UploadModel model)
         {
             _repository.Add(model);
@@ -47,7 +47,7 @@ namespace SG.Web.Controllers
                 result.Department = String.IsNullOrEmpty(model.Department) ? result.Department : model.Department;
 
                 result.Duration = String.IsNullOrEmpty(model.Duration.ToString()) ? result.Duration : model.Duration;
-                result.ContentCreatorId = String.IsNullOrEmpty(model.ContentCreatorId.ToString()) ? result.ContentCreatorId : model.ContentCreatorId;
+                result.ContentCreatorId = model.ContentCreatorId == Guid.Empty ? result.ContentCreatorId : model.ContentCreatorId;
                 result.Content = String.IsNullOrEmpty(model.Content) ? result.Content : model.Content;
                 _repository.Update(result);
                 return Ok(result);
