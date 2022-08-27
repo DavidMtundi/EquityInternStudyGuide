@@ -62,7 +62,6 @@ namespace SG.Repo
             {
                 entities.Update(model);
                 SaveChanges();
-
             }
             return model!;
         }
