@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SG.Data.Entities;
+using SG.Data.Entities.SG.Data.Entities;
 using SG.Repo;
 
 namespace SG.Web.Controllers
@@ -10,14 +11,20 @@ namespace SG.Web.Controllers
     public class UploadController : ControllerBase
     {
         private readonly IRepository<UploadModel> _repository;
+        private readonly IRepository<ContentCreatorModel> _repository1;
 
-        public UploadController(IRepository<UploadModel> repository)
+        public UploadController(IRepository<UploadModel> repository, IRepository<ContentCreatorModel> repository1)
         {
             this._repository = repository;
+            this._repository1 = repository1;
         }
         [HttpPost("add")]
         public IActionResult AddLearningMaterial(UploadModel model)
         {
+            ContentCreatorModel result = _repository1.GetById(model.ContentCreatorId);
+            if (result == null) return BadRequest();
+            model.ContentCreatorName = result.WorkEmail!.Remove(result.WorkEmail.Length - 17);
+            model.ContentCreatorName.Replace(".", " ");
             _repository.Add(model);
             return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + model.Id, model);
         }
@@ -48,7 +55,7 @@ namespace SG.Web.Controllers
 
                 result.Duration = String.IsNullOrEmpty(model.Duration.ToString()) ? result.Duration : model.Duration;
                 result.ContentCreatorId = model.ContentCreatorId == Guid.Empty ? result.ContentCreatorId : model.ContentCreatorId;
-                result.Content = String.IsNullOrEmpty(model.Content) ? result.Content : model.Content;
+                result.Content = (model.Content!.Count < 1) ? result.Content : model.Content;
                 _repository.Update(result);
                 return Ok(result);
 
