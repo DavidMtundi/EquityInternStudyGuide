@@ -26,6 +26,26 @@ namespace SG.Web.Controllers
         {
             return Ok(_repository.GetAll());
         }
+        [HttpGet("check-if-email-exists/{email}")]
+        public bool CheckIfEmailExists(String email)
+        {
+            String mail = email.ToUpper();
+            var result = _repository.GetAll();
+            var value = result.ToList().Find(value => value.WorkEmail!.ToUpper() == mail);
+            return value != null ? true : false;
+
+            //  return value != null ? Ok(value) : NotFound($"The id {email} cannot be found ");
+
+        }
+        [HttpGet("get-intern-details-from-email/{email}")]
+        public IActionResult GetInternDetailsFromMail(String email)
+        {
+            String mail = email.ToUpper();
+            var result = _repository.GetAll();
+            var value = result.ToList().Find(value => value.WorkEmail!.ToUpper() == mail);
+            return value != null ? Ok(value) : NotFound($"The id {email} cannot be found ");
+
+        }
         [HttpGet("get-by-id/{id}")]
         public IActionResult GetById(Guid id)
         {

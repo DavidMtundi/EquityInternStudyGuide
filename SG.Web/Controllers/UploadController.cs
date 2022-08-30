@@ -19,7 +19,7 @@ namespace SG.Web.Controllers
             this._repository1 = repository1;
         }
         [HttpPost("add")]
-        public IActionResult AddLearningMaterial(UploadModel model)
+        public IActionResult AddUpload(UploadModel model)
         {
             ContentCreatorModel result = _repository1.GetById(model.ContentCreatorId);
             if (result == null) return BadRequest();
@@ -32,6 +32,14 @@ namespace SG.Web.Controllers
         public IActionResult GetAll()
         {
             return Ok(_repository.GetAll());
+        }
+        [HttpGet("get-list-from-specific-deparment/{deparmentname}")]
+        public IActionResult GetFromDepartment(String deparmentname)
+        {
+            String deparment = deparmentname.ToUpper();
+            var result = _repository.GetAll().ToList().Where(value => value.Department.ToUpper() == deparment);
+            return Ok(result);
+
         }
         [HttpGet("get-by-id/{id}")]
         public IActionResult GetById(Guid id)
